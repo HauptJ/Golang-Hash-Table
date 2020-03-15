@@ -1,7 +1,7 @@
 package main
 
 import (
-	
+	"github.com/HauptJ/go-luhn"
 )
 
 type Card struct {
@@ -11,14 +11,52 @@ type Card struct {
 }
 
 
-func AddCard(status string, limitStr string) (*Card, error) {
+func AddCard(cardNumStr string, limitStr string) (*Card, error) {
+	
+	if(status == nil || limitStr == nil){
+		return nil, errors.new("NIL status and / or limitStr passed in")
+	}
+	
+	val, err := dollarValToInt(limitStr)
+	if(err != nil){
+		return nil, errors.new("Failed to convert limitStr to int")
+	}
 	
 	c := new(Card)
-	c.status =
-	c.limit = 
+	if(luhn.Valid(cardNumStr) == true){
+		c.status = "VALID"
+	} else {
+		c.status = "INVALID"
+	}
+	
+	c.limit = val
 	c.balance = 0
 	return c
 }
+
+
+func (c *Card) InitCard(cardNumStr string, limitStr string) error {
+	
+	if(status == nil || limitStr == nil){
+		return nil, errors.new("NIL status and / or limitStr passed in")
+	}
+	
+	val, err := dollarValToInt(limitStr)
+	if(err != nil){
+		return nil, errors.new("Failed to convert limitStr to int")
+	}
+	
+	if(luhn.Valid(cardNumStr) == true){
+		c.status = "VALID"
+	} else {
+		c.status = "INVALID"
+	}
+	
+	c.limit = val
+	c.balance = 0
+	
+}
+
 
 func (c *Card) CreditCard(string amountStr) error {
 	
@@ -27,6 +65,7 @@ func (c *Card) CreditCard(string amountStr) error {
 		c.balance -= amount
 	}
 }
+
 
 func (c *Card) ChargeCard(string amountStr) error {
 	
@@ -38,10 +77,11 @@ func (c *Card) ChargeCard(string amountStr) error {
 	}
 }
 
+
 func (c *Card) RetrieveBalance() (string, error) {
 	
 	if(c.status == "INVALID"){
-		return "ERROR", nil
+		return "ERROR", errors.new("CARD NUMBER IS INVALID")
 	} else if (c.status == "VALID"){
 		balanceStr, err :=
 		if(err != nil){
@@ -50,6 +90,6 @@ func (c *Card) RetrieveBalance() (string, error) {
 			return balanceStr, nil
 		}
 	} else {
-		return "ERROR", errors.new("INVALID CARD STATUS")
+		return "ERROR", errors.new("NON-SUPPORTED CARD STATUS")
 	}
 }
