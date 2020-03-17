@@ -129,3 +129,12 @@ func TestInitCardInvalid(t *testing.T) {
 		t.Errorf("Balance was wrong, got: %d, want: %d", actualCard.balance, expectedBalance)
 	}
 }
+
+func TestCreditCard(t *testing.T) {
+
+	// Arrange
+
+	// Act
+
+	// Assert
+}
