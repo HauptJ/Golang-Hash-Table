@@ -8,8 +8,8 @@ import (
 
 type Card struct {
 	status  string
-	limit   int64
-	balance int64
+	limit   float64
+	balance float64
 }
 
 func AddCard(cardNumStr string, limitStr string) (*Card, error) {
@@ -18,9 +18,9 @@ func AddCard(cardNumStr string, limitStr string) (*Card, error) {
 		return nil, errors.New("NIL status and / or limitStr passed in")
 	}
 
-	val, err := DollarValToInt(limitStr)
+	val, err := DollarValToFloat(limitStr)
 	if err != nil {
-		return nil, errors.New("Failed to convert limitStr to int")
+		return nil, errors.New("Failed to convert limitStr to float")
 	}
 
 	c := new(Card)
@@ -41,9 +41,9 @@ func (c *Card) InitCard(cardNumStr string, limitStr string) error {
 		return errors.New("NIL status and / or limitStr passed in")
 	}
 
-	val, err := DollarValToInt(limitStr)
+	val, err := DollarValToFloat(limitStr)
 	if err != nil {
-		return errors.New("Failed to convert limitStr to int")
+		return errors.New("Failed to convert limitStr to float")
 	}
 
 	if luhn.Valid(cardNumStr) == true {
@@ -62,9 +62,9 @@ func (c *Card) InitCard(cardNumStr string, limitStr string) error {
 func (c *Card) CreditCard(amountStr string) error {
 
 	if c.status == "VALID" {
-		amount, err := DollarValToInt(amountStr)
+		amount, err := DollarValToFloat(amountStr)
 		if err != nil {
-			return errors.New("Failed to convert amountStr to int")
+			return errors.New("Failed to convert amountStr to float")
 		}
 		c.balance -= amount
 	}
@@ -75,9 +75,13 @@ func (c *Card) CreditCard(amountStr string) error {
 func (c *Card) ChargeCard(amountStr string) error {
 
 	if c.status == "VALID" {
-		amount, err := DollarValToInt(amountStr)
+		amount, err := DollarValToFloat(amountStr)
 		if err != nil {
-			return errors.New("Failed to convert amountStr to int")
+			return errors.New("Failed to convert amountStr to float")
+		}
+
+		if amount < 0.01 {
+			return errors.New("Negative amount charged")
 		}
 
 		if c.balance+amount <= c.limit {
@@ -93,7 +97,7 @@ func (c *Card) RetrieveBalance() (string, error) {
 	if c.status == "INVALID" {
 		return "ERROR", errors.New("CARD NUMBER IS INVALID")
 	} else if c.status == "VALID" {
-		balanceStr, err := IntToDollarVal(c.balance)
+		balanceStr, err := FloatToDollarVal(c.balance)
 		if err != nil {
 			return "Failed to retrieve balance", err
 		} else {

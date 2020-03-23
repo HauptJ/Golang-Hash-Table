@@ -6,20 +6,20 @@ import (
 	"strings"
 )
 
-func DollarValToInt(amountStr string) (int64, error) {
+func DollarValToFloat(amountStr string) (float64, error) {
 	if amountStr == "" {
 		return 0, errors.New("Empty amountStr passed in")
 	}
 
-	val, err := strconv.ParseInt(strings.Replace(amountStr, "$", "", -1), 10, 64)
+	val, err := strconv.ParseFloat(strings.Replace(amountStr, "$", "", -1), 10)
 	if err != nil {
-		return 0, errors.New("Failed to convert string to int")
+		return 0, errors.New("Failed to convert string to float")
 	}
 
 	return val, nil
 }
 
-func IntToDollarVal(amount int64) (string, error) {
+func FloatToDollarVal(amount float64) (string, error) {
 
-	return "$" + strconv.FormatInt(amount, 10), nil
+	return "$" + strconv.FormatFloat(amount, 'f', -1, 64), nil
 }
