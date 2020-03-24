@@ -3,9 +3,11 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -22,7 +24,6 @@ func main() {
 
 		scanner = bufio.NewScanner(file)
 	}
-	fmt.Println(filePath)
 
 	scanner.Split(bufio.ScanLines)
 	var streamLines []string
@@ -35,13 +36,41 @@ func main() {
 		log.Println(err)
 	}
 
-	processStream(streamLines)
-}
+	res, err := processStream(streamLines)
 
-func processStream(streamLines []string) {
-
-	for _, line := range streamLines {
-		fmt.Println(line)
+	if err != nil {
+		log.Println(err)
 	}
 
+	for _, line := range res {
+		fmt.Println(line)
+	}
+}
+
+func processStream(streamLines []string) ([]string, error) {
+
+	cards := make(map[string]*Card)
+	var res []string
+
+	for _, line := range streamLines {
+		fields := strings.Fields(line)
+		if fields[0] == "Add" {
+			card := new(Card)
+			cards[fields[1]] = card
+			cards[fields[1]].InitCard(fields[2], fields[3])
+		} else if fields[0] == "Charge" {
+			cards[fields[1]].ChargeCard(fields[2])
+		} else if fields[0] == "Credit" {
+			cards[fields[1]].CreditCard(fields[2])
+		} else {
+			return nil, errors.New("Invalid option")
+		}
+	}
+
+	for name, _ := range cards {
+		balance, _ := cards[name].RetrieveBalance()
+		res = append(res, fmt.Sprintf("%s: %s", name, balance))
+	}
+
+	return res, nil
 }
