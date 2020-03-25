@@ -12,6 +12,7 @@ type Card struct {
 	balance float64
 }
 
+// Alternative method for initializing a card
 func AddCard(cardNumStr string, limitStr string) (*Card, error) {
 
 	if cardNumStr == "" || limitStr == "" {
