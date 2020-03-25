@@ -25,7 +25,9 @@ go build
 
 2. STDIN
 ```
-./Golang-Hash_table < input
+./Golang-Hash_table
+<Text>
+CRTL+D
 ```
 
 ## Testing
