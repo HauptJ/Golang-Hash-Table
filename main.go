@@ -68,7 +68,7 @@ func processStream(streamLines []string) ([]string, error) {
 	}
 
 	for name, _ := range cards {
-		balance, err := cards[name].RetrieveBalance()
+		balance, _ := cards[name].RetrieveBalance()
 
 		res = append(res, fmt.Sprintf("%s: %s", name, balance))
 	}
